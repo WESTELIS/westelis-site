@@ -118,7 +118,7 @@ ${thumbs}
 <ul class="trust"><li>✓ Local meetups at a bank or jeweler, with photo ID and bill of sale</li><li>✓ Nationwide insured shipping available</li><li>✓ Independent dealer · Central Florida · By appointment</li></ul>
 </section>
 </main>
-<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
 <script>
 document.querySelectorAll('.thumbs button').forEach(b=>b.onclick=()=>{document.getElementById('hero').src=b.dataset.src;});
 document.getElementById('share').onclick=async e=>{const d={title:${JSON.stringify(name)},url:${JSON.stringify(url)}};
