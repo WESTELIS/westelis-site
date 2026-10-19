@@ -79,7 +79,7 @@ function page(w) {
 <meta name="description" content="${esc(metaDesc)}">
 <link rel="canonical" href="${url}">
 <meta name="theme-color" content="#071d33">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="manifest" href="/site.webmanifest">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:type" content="product"><meta property="og:site_name" content="WESTELIS">
 <meta property="og:url" content="${url}"><meta property="og:title" content="${esc(name)}${price ? ' · ' + money(price) : ''}">
@@ -138,7 +138,7 @@ try{if(navigator.share){await navigator.share(d);return;}await navigator.clipboa
 
 function notFound() {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Watch no longer available | WESTELIS</title><meta name="robots" content="noindex">
+<title>Watch no longer available | WESTELIS</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="manifest" href="/site.webmanifest">
 <meta http-equiv="refresh" content="4;url=/#inventory">
 <style>body{margin:0;font:16px/1.7 Arial,sans-serif;color:#202527;display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
 h1{font:34px Georgia,serif;color:#755528;letter-spacing:4px}a{color:#755528}</style></head>
