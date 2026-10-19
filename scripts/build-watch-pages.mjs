@@ -9,6 +9,14 @@ const SITE = 'https://westelis.com';
 const FEED_URL = 'https://script.google.com/macros/s/AKfycbyngHdGrAkyT9-t7RPQ5bfvDkzMJBYQBj5wOqg6hSY-PJ5ktJn7clQLXDuJMtJRZeYAzQ/exec';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const PHONE = '+18633329829';
+const GA = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-QP4K1JHJ9P"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QP4K1JHJ9P');
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'',ev=null;
+if(h.indexOf('sms:')===0)ev='text_jb';else if(h.indexOf('tel:')===0)ev='call_jb';else if(/\\/drop\\/?$|whatsapp\\.com\\/channel/.test(h))ev='watch_drop_click';
+else if(/g\\.page\\/r\\//.test(h))ev='review_click';else if(/instagram\\.com/.test(h))ev='instagram_click';else if(/facebook\\.com/.test(h))ev='facebook_click';
+else if(a.classList.contains('share-btn')||a.id==='share')ev='share_watch';else if(/[?&]req=/.test(h))ev='request_details_click';else if(/\\/watch\\//.test(h))ev='open_watch_page';
+if(ev)gtag('event',ev,{link_text:(a.textContent||'').trim().slice(0,60),page_path:location.pathname});},true);</script>
+`;
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const slug = id => String(id).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -66,7 +74,7 @@ function page(w) {
   const thumbs = photos.length > 1 ? `<div class="thumbs">${photos.map((p, i) =>
     `<button type="button" data-src="${esc(size(p, 1600))}" aria-label="Photo ${i + 1}"><img src="${esc(size(p, 200))}" alt="" loading="lazy"></button>`).join('')}</div>` : '';
 
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(name)} | WESTELIS</title>
 <meta name="description" content="${esc(metaDesc)}">
 <link rel="canonical" href="${url}">
@@ -129,7 +137,7 @@ try{if(navigator.share){await navigator.share(d);return;}await navigator.clipboa
 }
 
 function notFound() {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Watch no longer available | WESTELIS</title><meta name="robots" content="noindex">
 <meta http-equiv="refresh" content="4;url=/#inventory">
 <style>body{margin:0;font:16px/1.7 Arial,sans-serif;color:#202527;display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
