@@ -1,0 +1,28 @@
+name: Build watch pages
+on:
+  schedule:
+    - cron: '17 * * * *'   # every hour
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/**', '.github/workflows/watch-pages.yml']
+permissions:
+  contents: write
+concurrency:
+  group: watch-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/build-watch-pages.mjs
+      - name: Commit if anything changed
+        run: |
+          git config user.name "westelis-bot"
+          git config user.email "westelis-bot@users.noreply.github.com"
+          git add -A watch sitemap.xml robots.txt 404.html
+          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Update watch pages from inventory feed" && git push; fi
