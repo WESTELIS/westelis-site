@@ -47,7 +47,7 @@ function brandOf(title) {
 
 function page(w) {
   const url = `${SITE}/watch/${slug(w.id)}/`;
-  const name = [w.title, w.reference].filter(Boolean).join(' ');
+  const name = [w.title, w.edition, w.reference].filter(Boolean).join(' ');
   const desc = cleanDesc(w.description);
   const photos = (w.photos || []).filter(Boolean);
   const hero = photos[0] ? size(photos[0], 1600) : `${SITE}/assets/og-card.jpg`;
@@ -101,7 +101,7 @@ main{max-width:1180px;margin:0 auto;padding:40px 6% 70px;display:grid;grid-templ
 .hero{width:100%;aspect-ratio:1/1;object-fit:contain;background:#eeeee8;display:block}
 .thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.thumbs button{padding:0;border:1px solid var(--line);background:none;cursor:pointer}
 .thumbs img{width:62px;height:62px;object-fit:cover;display:block}
-h1{font:clamp(30px,4vw,46px)/1.15 Georgia,serif;margin:0 0 6px}.ref{color:var(--muted);margin:0 0 18px;overflow-wrap:anywhere}
+h1{font:clamp(30px,4vw,46px)/1.15 Georgia,serif;margin:0 0 6px}.refrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 16px;margin:0 0 18px}.ref{color:var(--muted);margin:0;overflow-wrap:anywhere}.edition{margin-left:auto;font-size:13px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .price{font-size:30px;color:var(--gold);margin:0}.note{font-size:13px;color:var(--muted);margin:2px 0 22px}
 .desc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;margin:0 0 24px}
 .btn{display:block;text-align:center;padding:15px 18px;margin-bottom:12px;text-decoration:none;font-size:15px;border:1px solid #9b9e97;background:none;color:var(--ink);width:100%;font-family:inherit;cursor:pointer}
@@ -120,7 +120,7 @@ ${thumbs}
 </section>
 <section>
 <h1>${esc(w.title)}</h1>
-<p class="ref">${esc(w.reference || '')}${w.edition ? ' · ' + esc(w.edition) : ''}</p>
+<div class="refrow"><p class="ref">${esc(w.reference || '')}</p>${w.edition ? `<span class="edition">${esc(w.edition)}</span>` : ''}</div>
 <p class="price">${price ? money(price) : 'Price on request'}</p>
 <p class="note">${price ? 'Direct price · Offers considered' : 'Contact for price'}</p>
 <p class="desc">${esc(desc)}</p>
