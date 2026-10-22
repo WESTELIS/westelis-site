@@ -189,7 +189,7 @@ function sellPage(bought) {
     const title = tidyTitle(b.title);
     const img = b.photo
       ? `<img src="${esc(size(b.photo, 600))}" alt="${esc(title + ' bought by WESTELIS')}" loading="lazy">`
-      : `<div class="ph"><span>W</span></div>`;
+      : `<div class="ph"><img src="/assets/icon-512.png" alt="WESTELIS" loading="lazy"></div>`;
     return `<figure class="bought">${img}<figcaption><strong>${esc(title)}</strong>${b.reference ? `<span>${esc(String(b.reference).toUpperCase())}</span>` : ''}${b.month ? `<em>Purchased ${esc(b.month)}</em>` : ''}</figcaption></figure>`;
   }).join('');
 
@@ -222,7 +222,7 @@ h1{font:clamp(34px,5vw,58px)/1.1 Georgia,serif;margin:0 0 16px}h2{font:clamp(26p
 .note{color:var(--muted);font-size:15px}
 .bought-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
 .bought{margin:0;border:1px solid var(--line);background:var(--soft)}.bought img,.bought .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#eeeee8}
-.bought .ph{display:grid;place-items:center;font:64px Georgia,serif;color:#c7aa76}
+.bought .ph{display:grid;place-items:center;background:#071d33}.bought .ph img{width:46%;height:auto;aspect-ratio:auto;background:none}
 .bought figcaption{padding:12px 14px;font-size:14px;line-height:1.5}.bought strong{display:block;font-size:15px}.bought span{display:block;color:var(--muted)}.bought em{display:block;color:var(--gold);font-style:normal;font-size:13px;margin-top:4px}
 details{border-top:1px solid var(--line);padding:14px 0}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:bold}details p{color:var(--muted);margin:10px 0 0}
 form{max-width:640px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}label{display:block;font-size:14px;margin-bottom:16px}
