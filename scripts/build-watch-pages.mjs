@@ -18,6 +18,46 @@ else if(a.classList.contains('share-btn')||a.id==='share')ev='share_watch';else 
 if(ev)gtag('event',ev,{link_text:(a.textContent||'').trim().slice(0,60),page_path:location.pathname});},true);</script>
 `;
 
+
+// Desktop fallback for "Text JB" links: phones open Messages; computers get a QR code + copy panel.
+const SMS_DESKTOP = `<style>
+#smsd{position:fixed;inset:0;background:rgba(10,12,12,.62);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
+#smsd.on{display:flex}#smsd .box{background:#fff;color:#202527;max-width:420px;width:100%;padding:26px 26px 20px;position:relative;font:15px/1.6 Arial,sans-serif}
+#smsd h3{font:24px Georgia,serif;margin:0 0 4px}#smsd .sub{color:#596063;margin:0 0 16px;font-size:14px}
+#smsd .qr{display:flex;justify-content:center;margin:6px 0 14px}#smsd .qr img,#smsd .qr canvas{width:190px;height:190px}
+#smsd .num{display:flex;justify-content:space-between;align-items:center;border:1px solid #d9d8d2;padding:10px 12px;margin-bottom:10px;font-size:18px;letter-spacing:1px}
+#smsd .msg{border:1px solid #d9d8d2;padding:10px 12px;font-size:14px;color:#3a3f41;margin-bottom:10px;white-space:pre-wrap}
+#smsd button.cp{border:1px solid #9b9e97;background:none;padding:6px 12px;cursor:pointer;font:13px Arial,sans-serif}
+#smsd .x{position:absolute;top:8px;right:12px;border:0;background:none;font-size:26px;cursor:pointer;color:#596063}
+#smsd .alt{display:block;text-align:center;margin-top:12px;color:#755528;font-size:14px}
+</style>
+<div id="smsd" role="dialog" aria-modal="true" aria-labelledby="smsd-h"><div class="box">
+<button class="x" type="button" aria-label="Close">×</button>
+<h3 id="smsd-h">Text JB from your phone</h3><p class="sub">Scan with your phone's camera. Your Messages app opens with the note ready to send.</p>
+<div class="qr" id="smsd-qr"></div>
+<div class="num"><span>863.332.9829</span><button class="cp" type="button" data-copy="num">Copy number</button></div>
+<div class="msg" id="smsd-msg"></div><button class="cp" type="button" data-copy="msg">Copy message</button>
+<a class="alt" id="smsd-alt" href="#">Prefer email? Send the details online →</a>
+</div></div>
+<script>
+(function(){
+var mobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent));
+if(mobile)return;
+var m=document.getElementById('smsd'),qrEl=document.getElementById('smsd-qr'),msgEl=document.getElementById('smsd-msg'),alt=document.getElementById('smsd-alt'),qrLib=null;
+function loadQR(cb){if(window.QRCode)return cb();if(qrLib){qrLib.addEventListener('load',cb);return;}qrLib=document.createElement('script');qrLib.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';qrLib.onload=cb;qrLib.onerror=function(){qrEl.style.display='none';};document.head.appendChild(qrLib);}
+function close(){m.classList.remove('on');}
+m.addEventListener('click',function(e){if(e.target===m||e.target.classList.contains('x'))close();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+m.querySelectorAll('button.cp').forEach(function(b){b.onclick=function(){var t=b.dataset.copy==='num'?'8633329829':msgEl.textContent;var done=function(){var o=b.textContent;b.textContent='Copied ✓';setTimeout(function(){b.textContent=o;},1500);};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else done();};});
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="sms:"]');if(!a)return;e.preventDefault();
+var href=a.getAttribute('href'),body='';var i=href.indexOf('body=');if(i>-1){try{body=decodeURIComponent(href.slice(i+5));}catch(_){body='';}}
+msgEl.textContent=body;alt.href=a.dataset.alt||'#';alt.onclick=close;
+var qrText='SMSTO:+18633329829:'+body;qrEl.innerHTML='';m.classList.add('on');
+loadQR(function(){qrEl.innerHTML='';new QRCode(qrEl,{text:qrText,width:380,height:380,correctLevel:QRCode.CorrectLevel.M});});
+if(window.gtag)gtag('event','text_jb_desktop_panel',{page_path:location.pathname});});
+})();
+</script>`;
+
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const slug = id => String(id).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const money = n => '$' + Math.round(n).toLocaleString('en-US');
@@ -120,13 +160,14 @@ ${thumbs}
 <p class="price">${price ? money(price) : 'Price on request'}</p>
 <p class="note">${price ? 'Direct price · Offers considered' : 'Contact for price'}</p>
 <p class="desc">${esc(desc)}</p>
-<a class="btn primary" href="${esc(sms)}">Text JB about this watch</a>
+<a class="btn primary" href="${esc(sms)}" data-alt="/?req=${encodeURIComponent(w.id)}#quote">Text JB about this watch</a>
 <a class="btn" href="/?req=${encodeURIComponent(w.id)}#quote">Request details by email</a>
 <button class="btn" type="button" id="share">Share this watch</button>
 <ul class="trust"><li>✓ Local meetups at a bank or jeweler, with photo ID and bill of sale</li><li>✓ Nationwide insured shipping available</li><li>✓ Independent dealer · Central Florida · By appointment</li></ul>
 </section>
 </main>
 <footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+${SMS_DESKTOP}
 <script>
 document.querySelectorAll('.thumbs button').forEach(b=>b.onclick=()=>{document.getElementById('hero').src=b.dataset.src;});
 document.getElementById('share').onclick=async e=>{const d={title:${JSON.stringify(name)},url:${JSON.stringify(url)}};
@@ -237,7 +278,7 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <p class="eyebrow">SELL YOUR WATCH</p>
 <h1>Sell your watch to WESTELIS.</h1>
 <p class="lead">An independent watch buyer in Central Florida. Send the reference and a few photos, and JB will reply personally with an offer or any questions. No auctions, no listing fees, no waiting on buyers.</p>
-<div class="ctas"><a class="btn primary" href="${esc(sms)}">Text photos to JB</a><a class="btn" href="#offer">Request an offer online</a></div>
+<div class="ctas"><a class="btn primary" href="${esc(sms)}" data-alt="#offer">Text photos to JB</a><a class="btn" href="#offer">Request an offer online</a></div>
 </div></section>
 
 <section><div class="wrap">
@@ -261,7 +302,7 @@ ${cards ? `<section style="background:#fbfaf7;border-top:1px solid var(--line);b
 
 <section id="offer" style="background:var(--soft);border-top:1px solid var(--line)"><div class="wrap">
 <p class="eyebrow">REQUEST AN OFFER</p><h2>Tell us about your watch.</h2>
-<p class="note">Fastest: <a href="${esc(sms)}" style="color:var(--gold)">text photos to 863.332.9829</a>. Or send the details here and we'll ask for photos.</p>
+<p class="note">Fastest: <a href="${esc(sms)}" data-alt="#offer" style="color:var(--gold)">text photos to 863.332.9829</a>. Or send the details here and we'll ask for photos.</p>
 <form id="sell-form">
 <div class="grid2"><label>Name<input name="name" autocomplete="name" maxlength="100" required></label><label>Phone (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="60"></label></div>
 <label>Email<input name="email" type="email" autocomplete="email" maxlength="200" required></label>
@@ -279,6 +320,7 @@ ${faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></d
 </div></section>
 </main>
 <footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+${SMS_DESKTOP}
 <script>
 document.getElementById('sell-form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button'),st=document.getElementById('status');
 const d=Object.fromEntries(new FormData(f));if(d.website)return;d.kind='sell';b.disabled=true;st.textContent='Sending…';
