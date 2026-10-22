@@ -175,7 +175,7 @@ function sellPage(bought) {
     ['What do you need to make an offer?', 'The brand, full reference number, the year if you know it, and clear photos of the dial, case, caseback, bracelet or strap, and anything included such as the box, papers or service records.'],
     ['Do I need the box and papers?', 'No. Watches without box and papers are still bought, but complete sets are usually worth more, so mention everything you have.'],
     ['What affects the price?', 'The specific reference and current market demand, condition, whether the box and papers are included, service history, and whether all parts are original. Aftermarket parts or polishing can lower the value.'],
-    ['How does the sale happen?', 'In Central Florida we can meet at a bank or jeweler, with photo identification and a signed bill of sale. Payment method and timing are agreed before you hand over the watch. If you are outside the area, ask about insured shipping.'],
+    ['How does the sale happen?', 'In Central Florida we meet at a bank or jeweler, with photo identification and a signed bill of sale. Anywhere else in the US, you receive a prepaid, insured FedEx shipping label, send the watch in for inspection, and are paid once it passes inspection.'],
     ['Can I trade my watch toward another one?', 'Yes. Trade-ins toward a watch in our inventory are welcome. Tell us which watch you are interested in.'],
   ];
   const ld = [
@@ -195,7 +195,7 @@ function sellPage(bought) {
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sell Your Watch in Central Florida | Rolex, Tudor, Omega, Breitling | WESTELIS</title>
-<meta name="description" content="Sell your luxury watch to WESTELIS, an independent watch buyer in Central Florida. Rolex, Tudor, Omega, Breitling, IWC, Cartier, Panerai and more. Send photos, get an offer, meet at a bank or jeweler.">
+<meta name="description" content="Sell your luxury watch to WESTELIS, an independent watch buyer in Central Florida. Rolex, Tudor, Omega, Breitling, IWC, Cartier, Panerai and more. Send photos, get an offer, sell locally or by insured FedEx.">
 <link rel="canonical" href="${url}">
 <meta name="theme-color" content="#071d33">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -245,7 +245,7 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <div class="steps">
 <article><h3>1. Send the details</h3><p>Brand, full reference, condition, and photos of the dial, case, caseback and bracelet. Mention any box, papers or service records.</p></article>
 <article><h3>2. Get an offer</h3><p>Your watch is reviewed against current market prices, and you get a straight offer or any questions that need answering first.</p></article>
-<article><h3>3. Complete the sale</h3><p>Meet at a bank or jeweler with photo ID and a signed bill of sale. Payment method and timing are agreed before you hand over the watch.</p></article>
+<article><h3>3. Complete the sale</h3><p><strong>Local:</strong> meet at a bank or jeweler with photo ID and a signed bill of sale.<br><strong>Not local:</strong> you get a prepaid, insured FedEx label. Payment is sent once the watch arrives and passes inspection.</p></article>
 </div></div></section>
 
 ${cards ? `<section style="background:#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
