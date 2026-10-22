@@ -146,6 +146,150 @@ h1{font:34px Georgia,serif;color:#755528;letter-spacing:4px}a{color:#755528}</st
 `;
 }
 
+
+// ---------------------------------------------------------------------------
+// Sell page (/sell/): static, indexable, with "purchased from people like you"
+// pulled from Deal Tracker rows ticked "Show on Sell Page".
+// ---------------------------------------------------------------------------
+const BRAND_FIX = { 'tag heuer': 'TAG Heuer', 'glashutte': 'Glashütte Original', 'ulysses nardine': 'Ulysse Nardin', 'ulysse nardin': 'Ulysse Nardin' };
+function tidyTitle(t) {
+  let s = String(t || '').replace(/\s+/g, ' ').trim();
+  for (const [k, v] of Object.entries(BRAND_FIX)) if (s.toLowerCase().startsWith(k)) s = v + s.slice(k.length);
+  return s;
+}
+
+async function loadBought() {
+  try {
+    if (process.env.BOUGHT_FILE) return JSON.parse(fs.readFileSync(process.env.BOUGHT_FILE, 'utf8'));
+    if (process.env.FEED_FILE) return [];
+    const res = await fetch(FEED_URL + '?type=bought&t=' + Date.now(), { redirect: 'follow' });
+    const d = await res.json();
+    return Array.isArray(d) ? d.filter(x => x && !x.id && x.title) : [];  // old feed version returns inventory (has id): ignore
+  } catch (e) { console.log('Bought list unavailable: ' + e.message); return []; }
+}
+
+function sellPage(bought) {
+  const url = `${SITE}/sell/`;
+  const sms = `sms:${PHONE}?&body=${encodeURIComponent("Hi JB, I'd like to sell my watch. Brand / model / reference: ")}`;
+  const faqs = [
+    ['What do you need to make an offer?', 'The brand, full reference number, the year if you know it, and clear photos of the dial, case, caseback, bracelet or strap, and anything included such as the box, papers or service records.'],
+    ['Do I need the box and papers?', 'No. Watches without box and papers are still bought, but complete sets are usually worth more, so mention everything you have.'],
+    ['What affects the price?', 'The specific reference and current market demand, condition, whether the box and papers are included, service history, and whether all parts are original. Aftermarket parts or polishing can lower the value.'],
+    ['How does the sale happen?', 'In Central Florida we can meet at a bank or jeweler, with photo identification and a signed bill of sale. Payment method and timing are agreed before you hand over the watch. If you are outside the area, ask about insured shipping.'],
+    ['Can I trade my watch toward another one?', 'Yes. Trade-ins toward a watch in our inventory are welcome. Tell us which watch you are interested in.'],
+  ];
+  const ld = [
+    { '@context': 'https://schema.org', '@type': 'Service', name: 'Sell your luxury watch', serviceType: 'Pre-owned luxury watch buying',
+      provider: { '@type': 'Store', name: 'WESTELIS', url: SITE + '/', telephone: '+1-863-332-9829' }, areaServed: 'Central Florida', url },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+  ];
+  const brands = ['Rolex', 'Tudor', 'Omega', 'Breitling', 'IWC', 'Cartier', 'Panerai', 'TAG Heuer', 'Glashütte Original', 'Ulysse Nardin'];
+
+  const cards = bought.map(b => {
+    const title = tidyTitle(b.title);
+    const img = b.photo
+      ? `<img src="${esc(size(b.photo, 600))}" alt="${esc(title + ' bought by WESTELIS')}" loading="lazy">`
+      : `<div class="ph"><span>W</span></div>`;
+    return `<figure class="bought">${img}<figcaption><strong>${esc(title)}</strong>${b.reference ? `<span>${esc(String(b.reference).toUpperCase())}</span>` : ''}${b.month ? `<em>Purchased ${esc(b.month)}</em>` : ''}</figcaption></figure>`;
+  }).join('');
+
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sell Your Watch in Central Florida | Rolex, Tudor, Omega, Breitling | WESTELIS</title>
+<meta name="description" content="Sell your luxury watch to WESTELIS, an independent watch buyer in Central Florida. Rolex, Tudor, Omega, Breitling, IWC, Cartier, Panerai and more. Send photos, get an offer, meet at a bank or jeweler.">
+<link rel="canonical" href="${url}">
+<meta name="theme-color" content="#071d33">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="WESTELIS"><meta property="og:url" content="${url}">
+<meta property="og:title" content="Sell your watch to WESTELIS"><meta property="og:description" content="Send a few photos and the reference. Get a straight offer from an independent Central Florida buyer.">
+<meta property="og:image" content="${SITE}/assets/og-card.jpg"><meta name="twitter:card" content="summary_large_image">
+${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('\n')}
+<style>
+:root{--ink:#202527;--muted:#596063;--gold:#755528;--line:#d9d8d2;--soft:#f7f6f2}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:16px/1.7 Arial,Helvetica,sans-serif}a{color:inherit}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 6%;border-bottom:1px solid var(--line)}
+.wordmark{font:28px Georgia,serif;letter-spacing:5px;color:var(--gold);text-decoration:none}nav{display:flex;gap:22px;font-size:14px}nav a{text-decoration:none}
+section{padding:56px 6%}.wrap{max-width:1100px;margin:0 auto}
+.hero{background:var(--soft);border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;letter-spacing:2px;color:var(--gold);margin:0 0 10px}
+h1{font:clamp(34px,5vw,58px)/1.1 Georgia,serif;margin:0 0 16px}h2{font:clamp(26px,3.4vw,38px)/1.2 Georgia,serif;margin:0 0 18px}
+.lead{font-size:18px;color:var(--muted);max-width:640px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-block;text-align:center;padding:15px 24px;text-decoration:none;font-size:15px;border:1px solid #9b9e97;background:none;color:var(--ink);cursor:pointer;font-family:inherit}
+.btn.primary{background:#24292b;color:#fff;border-color:#24292b}.btn:hover{border-color:var(--gold)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:s}
+.steps article{border-top:3px solid #ae915d;padding:18px 0 0}.steps h3{font:22px Georgia,serif;margin:0 0 8px}.steps p{color:var(--muted);margin:0}
+.brands{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0;margin:0 0 12px}.brands li{border:1px solid var(--line);padding:8px 14px;font-size:14px}
+.note{color:var(--muted);font-size:15px}
+.bought-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
+.bought{margin:0;border:1px solid var(--line);background:var(--soft)}.bought img,.bought .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#eeeee8}
+.bought .ph{display:grid;place-items:center;font:64px Georgia,serif;color:#c7aa76}
+.bought figcaption{padding:12px 14px;font-size:14px;line-height:1.5}.bought strong{display:block;font-size:15px}.bought span{display:block;color:var(--muted)}.bought em{display:block;color:var(--gold);font-style:normal;font-size:13px;margin-top:4px}
+details{border-top:1px solid var(--line);padding:14px 0}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:bold}details p{color:var(--muted);margin:10px 0 0}
+form{max-width:640px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}label{display:block;font-size:14px;margin-bottom:16px}
+input,textarea{display:block;width:100%;padding:12px;border:1px solid #aeb1ab;font:16px Arial,sans-serif;margin-top:6px;border-radius:0}input:focus,textarea:focus{outline:2px solid #ae915d}
+.honeypot{position:absolute;left:-9999px}#status{font-size:15px}
+footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}footer a{text-decoration:none}
+@media(max-width:800px){.steps{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}nav a:not(.keep){display:none}.wordmark{font-size:22px}section{padding:44px 6%}}
+</style></head><body>
+<header><a class="wordmark" href="/">WESTELIS</a><nav><a href="/#inventory" class="keep">Watches for sale</a><a href="/drop/">Watch Drop</a><a href="#offer" class="keep">Get an offer</a></nav></header>
+<main>
+<section class="hero"><div class="wrap">
+<p class="eyebrow">SELL YOUR WATCH</p>
+<h1>Sell your watch to WESTELIS.</h1>
+<p class="lead">An independent watch buyer in Central Florida. Send the reference and a few photos, and JB will reply personally with an offer or any questions. No auctions, no listing fees, no waiting on buyers.</p>
+<div class="ctas"><a class="btn primary" href="${esc(sms)}">Text photos to JB</a><a class="btn" href="#offer">Request an offer online</a></div>
+</div></section>
+
+<section><div class="wrap">
+<p class="eyebrow">HOW IT WORKS</p><h2>Three steps.</h2>
+<div class="steps">
+<article><h3>1. Send the details</h3><p>Brand, full reference, condition, and photos of the dial, case, caseback and bracelet. Mention any box, papers or service records.</p></article>
+<article><h3>2. Get an offer</h3><p>Your watch is reviewed against current market prices, and you get a straight offer or any questions that need answering first.</p></article>
+<article><h3>3. Complete the sale</h3><p>Meet at a bank or jeweler with photo ID and a signed bill of sale. Payment method and timing are agreed before you hand over the watch.</p></article>
+</div></div></section>
+
+${cards ? `<section style="background:#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+<p class="eyebrow">RECENT PURCHASES</p><h2>Watches purchased from people just like you.</h2>
+<p class="note" style="margin-top:-6px">Real watches bought from private owners and trade-ins.</p>
+<div class="bought-grid">${cards}</div></div></section>` : ''}
+
+<section><div class="wrap">
+<p class="eyebrow">WHAT WE BUY</p><h2>Brands we buy.</h2>
+<ul class="brands">${brands.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+<p class="note">And other quality Swiss and German watches. With or without box and papers. Trade-ins toward a watch in our inventory are welcome.</p>
+</div></section>
+
+<section id="offer" style="background:var(--soft);border-top:1px solid var(--line)"><div class="wrap">
+<p class="eyebrow">REQUEST AN OFFER</p><h2>Tell us about your watch.</h2>
+<p class="note">Fastest: <a href="${esc(sms)}" style="color:var(--gold)">text photos to 863.332.9829</a>. Or send the details here and we'll ask for photos.</p>
+<form id="sell-form">
+<div class="grid2"><label>Name<input name="name" autocomplete="name" maxlength="100" required></label><label>Phone (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="60"></label></div>
+<label>Email<input name="email" type="email" autocomplete="email" maxlength="200" required></label>
+<label>Watch: brand, model and reference<input name="reference" maxlength="160" placeholder="e.g. Rolex Submariner 116610LN" required></label>
+<label>Details<textarea name="message" rows="5" maxlength="5000" required placeholder="Year, condition, box and papers, service history, and your asking price if you have one."></textarea></label>
+<label class="honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+<button class="btn primary" type="submit">Request an offer</button>
+<p id="status" role="status"></p>
+</form>
+</div></section>
+
+<section><div class="wrap" style="max-width:820px">
+<p class="eyebrow">QUESTIONS</p><h2>Before you sell.</h2>
+${faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
+</div></section>
+</main>
+<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+<script>
+document.getElementById('sell-form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button'),st=document.getElementById('status');
+const d=Object.fromEntries(new FormData(f));if(d.website)return;d.kind='sell';b.disabled=true;st.textContent='Sending…';
+try{await fetch(${JSON.stringify(FEED_URL)},{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});
+f.reset();st.textContent='Received. JB will reply using the details you provided. To speed things up, text photos to 863.332.9829.';
+if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}catch(err){st.textContent='Could not send. Please text or call 863.332.9829.';}finally{b.disabled=false;}};
+</script>
+</body></html>
+`;
+}
+
 const watches = (await loadFeed()).filter(w => w && w.id);
 const watchDir = path.join(ROOT, 'watch');
 fs.rmSync(watchDir, { recursive: true, force: true });
@@ -155,10 +299,13 @@ for (const w of watches) {
   fs.writeFileSync(path.join(dir, 'index.html'), page(w));
 }
 fs.writeFileSync(path.join(ROOT, '404.html'), notFound());
+const bought = await loadBought();
+fs.mkdirSync(path.join(ROOT, 'sell'), { recursive: true });
+fs.writeFileSync(path.join(ROOT, 'sell', 'index.html'), sellPage(bought));
 
-const urls = [`${SITE}/`, ...watches.map(w => `${SITE}/watch/${slug(w.id)}/`)];
+const urls = [`${SITE}/`, `${SITE}/sell/`, ...watches.map(w => `${SITE}/watch/${slug(w.id)}/`)];
 fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n') + `\n</urlset>\n`);
 fs.writeFileSync(path.join(ROOT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`Built ${watches.length} watch page(s).`);
+console.log(`Built ${watches.length} watch page(s) and the sell page (${bought.length} purchases).`);
