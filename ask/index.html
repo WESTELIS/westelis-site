@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask for a review · WESTELIS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#111313">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#111313;color:#ece8df;font:16px/1.6 Arial,Helvetica,sans-serif;padding:28px 18px 40px}
+  main{max-width:520px;margin:0 auto}
+  .mark{font:28px Georgia,serif;letter-spacing:5px;color:#c7aa76;text-align:center}
+  .tag{font-size:10px;letter-spacing:2px;color:#b1b2ae;text-align:center;margin:6px 0 26px}
+  label{display:block;font-size:13px;letter-spacing:1px;color:#b1b2ae;margin:0 0 6px}
+  input,textarea{width:100%;background:#1b1e1d;border:1px solid #444a47;color:#ece8df;font:16px/1.5 Arial,sans-serif;padding:12px;border-radius:0}
+  input:focus,textarea:focus{outline:2px solid #c7aa76;outline-offset:1px}
+  textarea{min-height:250px;resize:vertical}
+  .row{margin-bottom:18px}
+  .btn{display:block;width:100%;text-align:center;padding:15px;margin-bottom:12px;font:15px Arial,sans-serif;letter-spacing:1px;text-decoration:none;cursor:pointer;border:1px solid #706347;background:none;color:#c7aa76}
+  .btn.gold{background:#c7aa76;color:#111313;border-color:#c7aa76}
+  .btn.wa{background:#1f8f4e;color:#fff;border-color:#1f8f4e}
+  .note{font-size:13px;color:#8d908b;text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<main>
+  <div class="mark">WESTELIS</div>
+  <div class="tag">ASK FOR A REVIEW</div>
+  <div class="row"><label for="name">Client's first name (optional)</label><input id="name" autocomplete="off" placeholder="e.g. Chad"></div>
+  <div class="row"><label for="msg">Message</label><textarea id="msg"></textarea></div>
+  <button class="btn gold" id="copy" type="button">Copy message</button>
+  <a class="btn wa" id="wa" href="#">Send in WhatsApp</a>
+  <a class="btn" id="sms" href="#">Send as text</a>
+  <p class="note">The link in the message opens your Google review page: westelis.com/review</p>
+</main>
+<script>
+const nameEl=document.getElementById('name'),msgEl=document.getElementById('msg');
+let edited=false;
+function template(n){return (n?'Hi '+n+',':'Hi,')+' thank you again for doing business with WESTELIS. If you have a minute, a quick Google review would mean a lot and helps other collectors know they can trust us:\n\nhttps://westelis.com/review\n\nThank you!\nJB';}
+function refresh(){if(!edited)msgEl.value=template(nameEl.value.trim());}
+nameEl.addEventListener('input',refresh);
+msgEl.addEventListener('input',()=>{edited=true;});
+refresh();
+document.getElementById('copy').onclick=async e=>{const t=msgEl.value;try{await navigator.clipboard.writeText(t);}catch(_){msgEl.select();document.execCommand('copy');}e.target.textContent='Copied ✓';setTimeout(()=>e.target.textContent='Copy message',1600);};
+document.getElementById('wa').onclick=e=>{e.preventDefault();location.href='https://wa.me/?text='+encodeURIComponent(msgEl.value);};
+document.getElementById('sms').onclick=e=>{e.preventDefault();const sep=/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)?'&':'?';location.href='sms:'+sep+'body='+encodeURIComponent(msgEl.value);};
+</script>
+</body>
+</html>
