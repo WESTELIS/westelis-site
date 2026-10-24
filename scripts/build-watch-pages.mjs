@@ -122,7 +122,7 @@ ${thumbs}
 <h1>${esc(w.title)}</h1>
 <div class="refrow"><p class="ref">${esc(w.reference || '')}</p>${w.edition ? `<span class="edition">${esc(w.edition)}</span>` : ''}</div>
 ${w.auction ? `<p class="price"><a href="${esc(w.auction.url)}" target="_blank" rel="noopener" style="color:inherit;text-underline-offset:5px">Live auction on ${esc(w.auction.platform || 'Grailzee')} →</a></p>
-<p class="note">${w.auction.ends ? 'Ends ' + esc(w.auction.ends.replace(/, \d{4} at /, ' at ')) + ' ET · ' : ''}tap to watch or bid</p>` : `<p class="price">${price ? money(price) : 'Price on request'}</p>
+<p class="note">${w.auction.ends ? 'Ends ' + esc(w.auction.ends.replace(/, \d{4} at /, ' at ')) + ' ET · ' : ''}watch it or place your bid</p>` : `<p class="price">${price ? money(price) : 'Price on request'}</p>
 <p class="note">${price ? 'Direct price · Offers considered' : 'Contact for price'}</p>`}
 <p class="desc">${esc(desc)}</p>
 <a class="btn primary" href="${esc(sms)}" data-alt="/?req=${encodeURIComponent(w.id)}#quote">Text JB about this watch</a>
