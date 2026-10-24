@@ -121,12 +121,11 @@ ${thumbs}
 <section>
 <h1>${esc(w.title)}</h1>
 <div class="refrow"><p class="ref">${esc(w.reference || '')}</p>${w.edition ? `<span class="edition">${esc(w.edition)}</span>` : ''}</div>
-${w.auction ? `<p class="price">Live auction on ${esc(w.auction.platform || 'Grailzee')}</p>
-<p class="note">${w.auction.ends ? 'Auction ends ' + esc(w.auction.ends) + ' (ET) · ' : ''}Follow it or place a bid on ${esc(w.auction.platform || 'Grailzee')}</p>` : `<p class="price">${price ? money(price) : 'Price on request'}</p>
+${w.auction ? `<p class="price"><a href="${esc(w.auction.url)}" target="_blank" rel="noopener" style="color:inherit;text-underline-offset:5px">Live auction on ${esc(w.auction.platform || 'Grailzee')} →</a></p>
+<p class="note">${w.auction.ends ? 'Ends ' + esc(w.auction.ends.replace(/, \d{4} at /, ' at ')) + ' ET · ' : ''}tap above to watch or place a bid</p>` : `<p class="price">${price ? money(price) : 'Price on request'}</p>
 <p class="note">${price ? 'Direct price · Offers considered' : 'Contact for price'}</p>`}
 <p class="desc">${esc(desc)}</p>
-${w.auction ? `<a class="btn primary" href="${esc(w.auction.url)}" target="_blank" rel="noopener">Follow or bid on ${esc(w.auction.platform || 'Grailzee')}</a>` : ''}
-<a class="btn${w.auction ? '' : ' primary'}" href="${esc(sms)}" data-alt="/?req=${encodeURIComponent(w.id)}#quote">Text JB about this watch</a>
+<a class="btn primary" href="${esc(sms)}" data-alt="/?req=${encodeURIComponent(w.id)}#quote">Text JB about this watch</a>
 <a class="btn" href="/?req=${encodeURIComponent(w.id)}#quote">Request details by email</a>
 <button class="btn" type="button" id="share">Share this watch</button>
 <ul class="trust"><li>✓ Local meetups at a bank or jeweler, with photo ID and bill of sale</li><li>✓ Nationwide insured shipping available</li><li>✓ Independent dealer · Central Florida · By appointment</li></ul>
