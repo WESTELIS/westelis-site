@@ -36,6 +36,7 @@ h1{font:clamp(30px,4vw,46px)/1.15 Georgia,serif;margin:0 0 6px}.refrow{display:f
 .trust{list-style:none;padding:0;margin:22px 0 0;font-size:14px;color:var(--muted)}.trust li{padding:4px 0}
 footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 footer a{text-decoration:none}
+.hero{cursor:zoom-in}#lb{position:fixed;inset:0;background:rgba(8,14,24,.96);display:none;align-items:center;justify-content:center;z-index:100;touch-action:pan-y}#lb.on{display:flex}#lb img{max-width:96vw;max-height:88vh;object-fit:contain}#lb button{position:absolute;background:none;border:0;color:#fff;font-size:34px;cursor:pointer;padding:14px 18px;line-height:1}#lb .x{top:6px;right:8px}#lb .pv{left:4px;top:50%;transform:translateY(-50%)}#lb .nx{right:4px;top:50%;transform:translateY(-50%)}#lb .ct{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:#ccc;font-size:13px}
 @media(max-width:800px){main{grid-template-columns:1fr;gap:28px;padding-top:26px}nav a:not(.keep){display:none}.wordmark{font-size:22px}}
 </style></head><body>
 <header><a class="wordmark" href="/">WESTELIS</a><nav><a href="/#inventory" class="keep">All watches</a><a href="/drop/">Watch Drop</a><a href="/#contact" class="keep">Contact</a></nav></header>
@@ -60,7 +61,16 @@ footer a{text-decoration:none}
 <footer><span>© 2026 WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:+18633329829">863.332.9829</a></span></footer>
 <script src="/assets/sms-panel.js" defer></script>
 <script>
-document.querySelectorAll('.thumbs button').forEach(b=>b.onclick=()=>{document.getElementById('hero').src=b.dataset.src;});
+(function(){const P=["https://lh3.googleusercontent.com/d/1QHGGfUdysaEwIH5oVGM5Xvo8F3zEEVTj=w2400","https://lh3.googleusercontent.com/d/1JGF1OFF8BE-LJClxxl5L_VChboK88M2k=w2400","https://lh3.googleusercontent.com/d/1AIoJ8-Z5ZBWImOq4gO3eKrUmlAW6PqIb=w2400","https://lh3.googleusercontent.com/d/19HQnEwZCOf1Q2tpeY1An2POGikqQV0dd=w2400","https://lh3.googleusercontent.com/d/127VBr3IWVs6cicvxEZR5c6e9lgbJ8d-v=w2400","https://lh3.googleusercontent.com/d/1rYgdrosApS3MusvKdTmFoGGQoR4TcVtJ=w2400","https://lh3.googleusercontent.com/d/11QBxhvXb1wjxdw2g4kppHWeYnFqVmRBb=w2400"];let i=0;const H=document.getElementById('hero');
+document.querySelectorAll('.thumbs button').forEach((b,k)=>b.onclick=()=>{H.src=b.dataset.src;i=k;});
+if(!P.length)return;const L=document.createElement('div');L.id='lb';L.setAttribute('role','dialog');L.setAttribute('aria-label','Photo viewer');
+L.innerHTML='<img alt=""><button class="x" aria-label="Close">×</button>'+(P.length>1?'<button class="pv" aria-label="Previous">‹</button><button class="nx" aria-label="Next">›</button>':'')+'<div class="ct"></div>';document.body.append(L);
+const I=L.querySelector('img'),C=L.querySelector('.ct');const show=k=>{i=(k+P.length)%P.length;I.src=P[i];C.textContent=P.length>1?(i+1)+' / '+P.length:'';};
+const open=()=>{show(i);L.classList.add('on');document.body.style.overflow='hidden';},close=()=>{L.classList.remove('on');document.body.style.overflow='';};
+H.onclick=open;L.querySelector('.x').onclick=close;L.onclick=e=>{if(e.target===L)close();};
+if(P.length>1){L.querySelector('.pv').onclick=e=>{e.stopPropagation();show(i-1);};L.querySelector('.nx').onclick=e=>{e.stopPropagation();show(i+1);};}
+addEventListener('keydown',e=>{if(!L.classList.contains('on'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1);});
+let x0=null;L.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});L.addEventListener('touchend',e=>{if(x0===null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>40&&P.length>1)show(d<0?i+1:i-1);x0=null;});})();
 document.getElementById('share').onclick=async e=>{const d={title:"IWC Portofino Moon Phase IW544801",url:"https://westelis.com/watch/portmoon-blk-001/"};
 try{if(navigator.share){await navigator.share(d);return;}await navigator.clipboard.writeText(d.url);e.target.textContent='Link copied';}catch(_){}};
 </script>
