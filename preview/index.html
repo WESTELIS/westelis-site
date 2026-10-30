@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://westelis.com/assets/og-card.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="/assets/hero-lake.webp" imagesrcset="/assets/hero-lake-960.webp 960w, /assets/hero-lake.webp 1672w" imagesizes="100vw">
+<link rel="preload" as="image" href="/assets/hero-terrace.webp" imagesrcset="/assets/hero-terrace-960.webp 960w, /assets/hero-terrace.webp 1672w" imagesizes="100vw">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"WESTELIS","alternateName":["Westelis Watches","Westels","Westelis Time"],"url":"https://westelis.com/","logo":"https://westelis.com/assets/icon-512.png","image":"https://westelis.com/assets/og-card.jpg","telephone":"+1-863-332-9829","description":"Independent luxury watch concierge: buying, selling and sourcing pre-owned luxury watches.","areaServed":"Central Florida","founder":{"@type":"Person","name":"JB Hale"},"sameAs":["https://www.instagram.com/westelis.time/","https://www.facebook.com/profile.php?id=61578202760394","https://whatsapp.com/channel/0029VbDj6PY8qIzzXnxPPc3A"]}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QP4K1JHJ9P"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QP4K1JHJ9P');
@@ -60,10 +60,10 @@ h2{font-size:clamp(34px,4.2vw,52px);line-height:1.1;color:var(--navy)}
 /* Hero */
 .hero{position:relative;min-height:min(100vh,940px);overflow:hidden;background:var(--navy)}
 .hero-media{position:absolute;inset:0}
-.hero-media img{width:100%;height:100%;object-fit:cover;object-position:30% 50%;transform:scale(1.04);animation:drift 26s ease-out forwards}
+.hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:scale(1.04);animation:drift 26s ease-out forwards}
 @keyframes drift{to{transform:scale(1)}}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(270deg,rgba(11,29,51,.42) 0%,rgba(11,29,51,.12) 42%,rgba(11,29,51,0) 62%),linear-gradient(0deg,rgba(11,29,51,.28),rgba(11,29,51,0) 30%);pointer-events:none}
-.hero-copy{position:relative;z-index:2;margin-left:auto;width:min(520px,44%);padding:24vh 6vw 0 0;color:#fff;text-shadow:0 2px 24px rgba(11,29,51,.35)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,29,51,.62) 0%,rgba(11,29,51,.38) 30%,rgba(11,29,51,0) 52%),linear-gradient(180deg,rgba(11,29,51,.35),rgba(11,29,51,0) 18%);pointer-events:none}
+.hero-copy{position:relative;z-index:2;width:min(520px,42%);padding:24vh 0 0 6vw;color:#fff;text-shadow:0 2px 24px rgba(11,29,51,.35)}
 .hero-copy .eyebrow{color:#fff;opacity:.9;text-shadow:0 1px 14px rgba(11,29,51,.6)}
 .hero h1{font-size:clamp(46px,5.4vw,78px);line-height:1.02;color:#fff}
 .hero-sub{font-size:18px;margin:22px 0 34px;max-width:430px;color:rgba(255,255,255,.95)}
@@ -177,12 +177,13 @@ summary{cursor:pointer;font-weight:500;color:var(--navy)}details p{color:var(--m
 /* Mobile */
 @media(max-width:760px){
   .wrap{padding:0 22px}
-  .site-header .wrap{height:68px}
+  .site-header{position:relative;background:var(--navy)}.site-header .brand{display:none}
+  .site-header .wrap{height:64px;justify-content:center}
   .brand{font-size:18px;letter-spacing:.28em}
   .nav{gap:16px}.nav a:not(.keep){display:none}.nav .nav-cta{padding:10px 12px;white-space:nowrap;letter-spacing:.12em}
   .hero{min-height:0;display:flex;flex-direction:column;background:var(--navy)}
   .hero-media{position:relative;aspect-ratio:16/11}
-  .hero-media img{object-position:12% 50%}
+  .hero-media img{object-position:78% 50%}
   .hero::after{background:linear-gradient(180deg,rgba(11,29,51,.35) 0%,rgba(11,29,51,0) 22%)}
   .hero-copy{width:auto;margin:0;padding:40px 22px 56px;text-shadow:none}
   .hero h1{font-size:44px}
@@ -216,7 +217,7 @@ summary{cursor:pointer;font-weight:500;color:var(--navy)}details p{color:var(--m
 <main id="main">
 <section class="hero" aria-label="Welcome">
   <div class="hero-media">
-    <img src="/assets/hero-lake.webp" srcset="/assets/hero-lake-960.webp 960w, /assets/hero-lake.webp 1672w" sizes="100vw" alt="WESTELIS: a watch resting on a navy leather book on a stone terrace above a lake at golden hour" fetchpriority="high">
+    <img src="/assets/hero-terrace.webp" srcset="/assets/hero-terrace-960.webp 960w, /assets/hero-terrace.webp 1672w" sizes="100vw" alt="The WESTELIS logo in gold on a marble wall of a seaside terrace at golden hour" fetchpriority="high">
   </div>
   <div class="hero-copy">
     <p class="eyebrow">Concierge · Timepieces · Legacy</p>
