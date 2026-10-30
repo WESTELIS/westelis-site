@@ -254,7 +254,7 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <article><h3>3. Complete the sale</h3><p><strong>Local:</strong> meet at a bank or jeweler with photo ID and a signed bill of sale.<br><strong>Not local:</strong> you get a prepaid, insured FedEx label. Payment is sent once the watch arrives and passes inspection.</p></article>
 </div></div></section>
 
-${cards ? `<section style="background:#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+${cards ? `<section id="references" style="scroll-margin-top:20px;background:#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
 <p class="eyebrow">RECENT PURCHASES</p><h2>Watches purchased from people just like you.</h2>
 <p class="note" style="margin-top:-6px">Real watches bought from private owners and trade-ins.</p>
 <div class="bought-grid">${cards}</div></div></section>` : ''}
