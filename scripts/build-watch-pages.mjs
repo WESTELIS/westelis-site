@@ -156,6 +156,7 @@ function notFound() {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Watch no longer available | WESTELIS</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="manifest" href="/site.webmanifest">
 <meta http-equiv="refresh" content="4;url=/#inventory">
+<script>(function(){var p=location.pathname.toLowerCase();var m=[[/^\/sell-?your-?watch|^\/sell-?to-?us/,'/sell/'],[/^\/portfolio|^\/shop|^\/inventory|^\/watches/,'/#inventory'],[/^\/experiences|^\/about|^\/contact/,'/']];for(var i=0;i<m.length;i++)if(m[i][0].test(p)){location.replace(m[i][1]);return;}})();</script>
 <style>body{margin:0;font:16px/1.7 Arial,sans-serif;color:#202527;display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
 h1{font:34px Georgia,serif;color:#755528;letter-spacing:4px}a{color:#755528}</style></head>
 <body><div><h1>WESTELIS</h1><p>That watch has sold or the page has moved.</p><p><a href="/#inventory">See available watches</a> · <a href="/drop/">Follow the Watch Drop</a></p></div></body></html>
@@ -316,6 +317,12 @@ for (const w of watches) {
   fs.writeFileSync(path.join(dir, 'index.html'), page(w));
 }
 fs.writeFileSync(path.join(ROOT, '404.html'), notFound());
+// Old-site URLs Google still shows: permanent stubs that forward to the new pages.
+const OLD = { sellyourwatch: '/sell/', portfolio: '/#inventory', experiences: '/' };
+for (const [p, to] of Object.entries(OLD)) {
+  fs.mkdirSync(path.join(ROOT, p), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, p, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>WESTELIS</title><link rel="canonical" href="${SITE}${to}"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=${to}"><script>location.replace(${JSON.stringify(to)});</script></head><body><a href="${to}">Continue to WESTELIS</a></body></html>\n`);
+}
 const bought = await loadBought();
 fs.mkdirSync(path.join(ROOT, 'sell'), { recursive: true });
 fs.writeFileSync(path.join(ROOT, 'sell', 'index.html'), sellPage(bought));
