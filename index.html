@@ -351,12 +351,13 @@ const BRANDS=['Audemars Piguet','Patek Philippe','Vacheron Constantin','Jaeger-L
 function splitTitle(t){t=String(t||'').trim();const b=BRANDS.find(x=>t.toLowerCase().startsWith(x.toLowerCase()+' '));if(b)return[b,t.slice(b.length).trim()];const i=t.indexOf(' ');return i>0?[t.slice(0,i),t.slice(i+1)]:[t,''];}
 const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
 
-async function loadWatches(){
-  const grid=document.getElementById('watch-list');
-  try{
-    const r=await fetch(FEED);const list=(await r.json()).filter(w=>(w.status||'available').toLowerCase()==='available');
-    grid.replaceChildren();
-    if(!list.length){const e=el('div',undefined,'empty-state');e.append(el('p','New arrivals are on the way. Join the Watch Drop for a first look, or tell us what you’re looking for.'));grid.append(e);return;}
+let _invSig=null,_invDone=false;
+const avail=d=>(Array.isArray(d)?d:[]).filter(w=>(w.status||'available').toLowerCase()==='available');
+function renderWatches(list){
+  const sig=JSON.stringify(list);if(sig===_invSig)return;_invSig=sig;
+  const grid=document.getElementById('watch-list');grid.replaceChildren();
+  if(!list.length){const e=el('div',undefined,'empty-state');e.append(el('p','New arrivals are on the way. Join the Watch Drop for a first look, or tell us what you’re looking for.'));grid.append(e);}
+  else{
     for(const w of list){
       const url='/watch/'+slug(w.id)+'/';const [brand,model]=splitTitle(w.title);
       const card=el('article',undefined,'watch-card reveal in');card.id='watch-'+w.id;
@@ -374,8 +375,15 @@ async function loadWatches(){
       const b=el('a','View Details','btn btn-line');b.href=url;body.append(b);
       card.append(body);grid.append(card);
     }
-    focusShared();prefillRequest(list);alignCards();
-  }catch(e){grid.replaceChildren(el('div','Current availability could not be loaded. Please call or text 863.332.9829.','empty-state'));}
+  }
+  if(!_invDone){_invDone=true;focusShared();prefillRequest(list);}
+  alignCards();
+}
+async function loadWatches(){
+  let shown=false;
+  try{const r=await fetch('/assets/inventory.json',{cache:'no-cache'});if(r.ok){renderWatches(avail(await r.json()));shown=true;}}catch(e){}
+  try{const r=await fetch(FEED);renderWatches(avail(await r.json()));shown=true;}catch(e){}
+  if(!shown)document.getElementById('watch-list').replaceChildren(el('div','Current availability could not be loaded. Please call or text 863.332.9829.','empty-state'));
 }
 function alignCards(){const sel=['.card-model','.ref-row','.price'];const cards=[...document.querySelectorAll('.watch-card')];sel.forEach(q=>cards.forEach(c=>{const e=c.querySelector(q);if(e)e.style.minHeight='';}));if(innerWidth<761)return;const rows={};cards.forEach(c=>{(rows[c.offsetTop]=rows[c.offsetTop]||[]).push(c);});Object.values(rows).forEach(r=>sel.forEach(q=>{const els=r.map(c=>c.querySelector(q)).filter(Boolean);const m=Math.max(...els.map(e=>e.getBoundingClientRect().height));els.forEach(e=>e.style.minHeight=m+'px');}));}
 addEventListener('resize',()=>{clearTimeout(window._ac);window._ac=setTimeout(alignCards,150);});addEventListener('load',alignCards);

@@ -309,6 +309,8 @@ if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}
 }
 
 const watches = (await loadFeed()).filter(w => w && w.id);
+// Snapshot for the homepage so inventory shows instantly; the page then refreshes from the live feed.
+fs.writeFileSync(path.join(ROOT, 'assets', 'inventory.json'), JSON.stringify(watches) + '\n');
 const watchDir = path.join(ROOT, 'watch');
 fs.rmSync(watchDir, { recursive: true, force: true });
 for (const w of watches) {
