@@ -185,19 +185,39 @@ async function loadBought() {
   } catch (e) { console.log('Bought list unavailable: ' + e.message); return []; }
 }
 
-function sellPage(bought) {
-  const url = `${SITE}/sell/`;
-  const sms = `sms:${PHONE}?&body=${encodeURIComponent("Hi JB, I'd like to sell my watch. Brand / model / reference: ")}`;
+// City landing pages for seller searches ("rolex buyer fort myers" etc.). Each one is the Sell page with a
+// city-specific heading, an honest note on how the sale works from there, and its own FAQ entry.
+const CITIES = [
+  { slug: 'lakeland', name: 'Lakeland', areas: 'Lakeland, Winter Haven, Bartow, Auburndale and the rest of Polk County', local: true },
+  { slug: 'orlando', name: 'Orlando', areas: 'Orlando, Winter Park, Kissimmee, Lake Nona, Windermere and Clermont', local: true },
+  { slug: 'tampa', name: 'Tampa', areas: 'Tampa, St. Petersburg, Clearwater, Brandon and Wesley Chapel', local: true },
+  { slug: 'sarasota', name: 'Sarasota', areas: 'Sarasota, Bradenton, Lakewood Ranch and Venice', local: false },
+  { slug: 'fort-myers', name: 'Fort Myers', areas: 'Fort Myers, Cape Coral, Naples, Estero and Bonita Springs', local: false },
+  { slug: 'west-palm-beach', name: 'West Palm Beach', areas: 'West Palm Beach, Palm Beach, Jupiter, Wellington and Boca Raton', local: false },
+];
+function areaLinks(current) {
+  return `<section style="border-top:1px solid var(--line)"><div class="wrap"><p class="eyebrow">AREAS WE BUY FROM</p><h2>Selling a watch in Florida?</h2>
+<ul class="brands">${CITIES.map(c => c.slug === current ? `<li><strong>${esc(c.name)}</strong></li>` : `<li><a href="/sell/${c.slug}/" style="text-decoration:none">Sell a watch in ${esc(c.name)}</a></li>`).join('')}</ul>
+<p class="note">Anywhere else in the US, watches are bought by prepaid, insured FedEx.${current ? ' <a href="/sell/">How selling works</a>.' : ''}</p></div></section>`;
+}
+
+function sellPage(bought, city) {
+  const url = city ? `${SITE}/sell/${city.slug}/` : `${SITE}/sell/`;
+  const where = city ? city.name : 'Central Florida';
+  const sms = `sms:${PHONE}?&body=${encodeURIComponent(`Hi JB, I'd like to sell my watch${city ? ' (' + city.name + ' area)' : ''}. Brand / model / reference: `)}`;
   const faqs = [
     ['What do you need to make an offer?', 'The brand, full reference number, the year if you know it, and clear photos of the dial, case, caseback, bracelet or strap, and anything included such as the box, papers or service records.'],
     ['Do I need the box and papers?', 'No. Watches without box and papers are still bought, but complete sets are usually worth more, so mention everything you have.'],
     ['What affects the price?', 'The specific reference and current market demand, condition, whether the box and papers are included, service history, and whether all parts are original. Aftermarket parts or polishing can lower the value.'],
     ['How does the sale happen?', 'In Central Florida we meet at a bank or jeweler, with photo identification and a signed bill of sale. Anywhere else in the US, you receive a prepaid, insured FedEx shipping label, send the watch in for inspection, and are paid once it passes inspection.'],
+    ...(city ? [[`Do you buy watches in ${city.name}?`, city.local
+      ? `Yes. ${city.name} is in our Central Florida area, so the sale can be done in person by appointment at a bank or jeweler, with photo ID and a signed bill of sale. Insured FedEx is also available if that is easier for you.`
+      : `Yes. Most sales from the ${city.name} area are done by prepaid, insured FedEx: you send the watch in for inspection and are paid once it passes. An in-person meeting can sometimes be arranged by appointment.`]] : []),
     ['Can I trade my watch toward another one?', 'Yes. Trade-ins toward a watch in our inventory are welcome. Tell us which watch you are interested in.'],
   ];
   const ld = [
     { '@context': 'https://schema.org', '@type': 'Service', name: 'Sell your luxury watch', serviceType: 'Pre-owned luxury watch buying',
-      provider: { '@type': 'Store', name: 'WESTELIS', url: SITE + '/', telephone: '+1-863-332-9829' }, areaServed: 'Central Florida', url },
+      provider: { '@type': 'Store', name: 'WESTELIS', url: SITE + '/', telephone: '+1-863-332-9829' }, areaServed: city ? { '@type': 'City', name: city.name + ', Florida' } : 'Central Florida', url },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
   ];
   const brands = ['Rolex', 'Tudor', 'Omega', 'Breitling', 'IWC', 'Cartier', 'Panerai', 'TAG Heuer', 'Glashütte Original', 'Ulysse Nardin'];
@@ -211,13 +231,13 @@ function sellPage(bought) {
   }).join('');
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GA}<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sell Your Watch in Central Florida | Rolex, Tudor, Omega, Breitling | WESTELIS</title>
-<meta name="description" content="Sell your luxury watch to WESTELIS, an independent watch buyer in Central Florida. Rolex, Tudor, Omega, Breitling, IWC, Cartier, Panerai and more. Send photos, get an offer, sell locally or by insured FedEx.">
+<title>${city ? `Sell Your Watch in ${esc(city.name)}, FL | Rolex, Omega, Tudor, Panerai Buyer | WESTELIS` : 'Sell Your Watch in Central Florida | Rolex, Tudor, Omega, Breitling | WESTELIS'}</title>
+<meta name="description" content="Sell your luxury watch to WESTELIS, an independent watch buyer serving ${esc(city ? city.name + ' and Florida' : 'Central Florida')}. Rolex, Tudor, Omega, Breitling, IWC, Cartier, Panerai and more. Send photos, get an offer, sell locally or by insured FedEx.">
 <link rel="canonical" href="${url}">
 <meta name="theme-color" content="#071d33">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="WESTELIS"><meta property="og:url" content="${url}">
-<meta property="og:title" content="Sell your watch to WESTELIS"><meta property="og:description" content="Send a few photos and the reference. Get a straight offer from an independent Central Florida buyer.">
+<meta property="og:title" content="Sell your watch${city ? ' in ' + esc(city.name) : ''} to WESTELIS"><meta property="og:description" content="Send a few photos and the reference. Get a straight offer from an independent Central Florida buyer.">
 <meta property="og:image" content="${SITE}/assets/og-card.jpg"><meta name="twitter:card" content="summary_large_image">
 ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('\n')}
 <style>
@@ -251,9 +271,9 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <header><a class="wordmark" href="/">WESTELIS</a><nav><a href="/#inventory" class="keep">Watches for sale</a><a href="/drop/">Watch Drop</a><a href="#offer" class="keep">Get an offer</a></nav></header>
 <main>
 <section class="hero"><div class="wrap">
-<p class="eyebrow">SELL YOUR WATCH</p>
-<h1>Sell your watch to WESTELIS.</h1>
-<p class="lead">An independent watch buyer in Central Florida. Send the reference and a few photos, and JB will reply personally with an offer or any questions. No auctions, no listing fees, no waiting on buyers.</p>
+<p class="eyebrow">SELL YOUR WATCH${city ? ' · ' + esc(city.name.toUpperCase()) : ''}</p>
+<h1>${city ? `Sell your watch in ${esc(city.name)}.` : 'Sell your watch to WESTELIS.'}</h1>
+<p class="lead">${city ? `WESTELIS buys Rolex, Omega, Tudor, Panerai, Breitling and other luxury watches from owners in ${esc(city.areas)}.` : 'An independent watch buyer in Central Florida.'} Send the reference and a few photos, and JB will reply personally with an offer or any questions. No auctions, no listing fees, no waiting on buyers.</p>
 <div class="ctas"><a class="btn primary" href="${esc(sms)}" data-alt="#offer">Text photos to JB</a><a class="btn" href="#offer">Request an offer online</a></div>
 </div></section>
 
@@ -263,7 +283,7 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <article><h3>1. Send the details</h3><p>Brand, full reference, condition, and photos of the dial, case, caseback and bracelet. Mention any box, papers or service records.</p></article>
 <article><h3>2. Get an offer</h3><p>Your watch is reviewed against current market prices, and you get a straight offer or any questions that need answering first.</p></article>
 <article><h3>3. Complete the sale</h3><p><strong>Local:</strong> meet at a bank or jeweler with photo ID and a signed bill of sale.<br><strong>Not local:</strong> you get a prepaid, insured FedEx label. Payment is sent once the watch arrives and passes inspection.</p></article>
-</div></div></section>
+</div>${city ? `<p class="note" style="margin-top:22px"><strong>From ${esc(city.name)}:</strong> ${city.local ? 'in-person meetings are available by appointment, or use insured FedEx if you prefer.' : 'most sales are completed by prepaid, insured FedEx, start to finish without leaving home.'}</p>` : ''}</div></section>
 
 ${cards ? `<section id="references" style="scroll-margin-top:20px;background:#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
 <p class="eyebrow">RECENT PURCHASES</p><h2>Watches purchased from people just like you.</h2>
@@ -275,6 +295,8 @@ ${cards ? `<section id="references" style="scroll-margin-top:20px;background:#fb
 <ul class="brands">${brands.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
 <p class="note">And other quality Swiss and German watches. With or without box and papers. Trade-ins toward a watch in our inventory are welcome.</p>
 </div></section>
+
+${areaLinks(city && city.slug)}
 
 <section id="offer" style="background:var(--soft);border-top:1px solid var(--line)"><div class="wrap">
 <p class="eyebrow">REQUEST AN OFFER</p><h2>Tell us about your watch.</h2>
@@ -328,8 +350,12 @@ for (const [p, to] of Object.entries(OLD)) {
 const bought = await loadBought();
 fs.mkdirSync(path.join(ROOT, 'sell'), { recursive: true });
 fs.writeFileSync(path.join(ROOT, 'sell', 'index.html'), sellPage(bought));
+for (const c of CITIES) {
+  fs.mkdirSync(path.join(ROOT, 'sell', c.slug), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, 'sell', c.slug, 'index.html'), sellPage(bought, c));
+}
 
-const urls = [`${SITE}/`, `${SITE}/sell/`, ...watches.map(w => `${SITE}/watch/${slug(w.id)}/`)];
+const urls = [`${SITE}/`, `${SITE}/sell/`, ...CITIES.map(c => `${SITE}/sell/${c.slug}/`), ...watches.map(w => `${SITE}/watch/${slug(w.id)}/`)];
 fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n') + `\n</urlset>\n`);
