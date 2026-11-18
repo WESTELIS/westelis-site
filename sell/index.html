@@ -91,13 +91,13 @@ footer{border-top:1px solid var(--line);padding:26px 6%;font-size:14px;color:var
 <details><summary>What do you need to make an offer?</summary><p>The brand, full reference number, the year if you know it, and clear photos of the dial, case, caseback, bracelet or strap, and anything included such as the box, papers or service records.</p></details><details><summary>Do I need the box and papers?</summary><p>No. Watches without box and papers are still bought, but complete sets are usually worth more, so mention everything you have.</p></details><details><summary>What affects the price?</summary><p>The specific reference and current market demand, condition, whether the box and papers are included, service history, and whether all parts are original. Aftermarket parts or polishing can lower the value.</p></details><details><summary>How does the sale happen?</summary><p>In Central Florida we meet at a bank or jeweler, with photo identification and a signed bill of sale. Anywhere else in the US, you receive a prepaid, insured FedEx shipping label, send the watch in for inspection, and are paid once it passes inspection.</p></details><details><summary>Can I trade my watch toward another one?</summary><p>Yes. Trade-ins toward a watch in our inventory are welcome. Tell us which watch you are interested in.</p></details>
 </div></section>
 </main>
-<footer><span>© 2026 WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:+18633329829">863.332.9829</a></span></footer>
+<footer><span>© 2026 WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="sms:+18633329829">Text 863.332.9829</a></span></footer>
 <script src="/assets/sms-panel.js" defer></script>
 <script>
 document.getElementById('sell-form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button'),st=document.getElementById('status');
 const d=Object.fromEntries(new FormData(f));if(d.website)return;d.kind='sell';b.disabled=true;st.textContent='Sending…';
 try{await fetch("https://script.google.com/macros/s/AKfycbyngHdGrAkyT9-t7RPQ5bfvDkzMJBYQBj5wOqg6hSY-PJ5ktJn7clQLXDuJMtJRZeYAzQ/exec",{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});
 f.reset();st.textContent='Received. JB will reply using the details you provided. To speed things up, text photos to 863.332.9829.';
-if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}catch(err){st.textContent='Could not send. Please text or call 863.332.9829.';}finally{b.disabled=false;}};
+if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}catch(err){st.textContent='Could not send. Please text 863.332.9829.';}finally{b.disabled=false;}};
 </script>
 </body></html>
