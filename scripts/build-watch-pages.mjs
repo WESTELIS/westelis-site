@@ -132,7 +132,7 @@ ${w.auction ? `<p class="price"><a href="${esc(w.auction.url)}" target="_blank" 
 <ul class="trust"><li>✓ Local meetups at a bank or jeweler, with photo ID and bill of sale</li><li>✓ Nationwide insured shipping available</li><li>✓ Independent dealer · Central Florida · By appointment</li></ul>
 </section>
 </main>
-<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida</span><span><a href="/drop/">Follow the Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="sms:${PHONE}">Text 863.332.9829</a></span></footer>
 ${SMS_DESKTOP}
 <script>
 (function(){const P=${JSON.stringify(photos.map(p => size(p, 2400)))};let i=0;const H=document.getElementById('hero');
@@ -295,14 +295,14 @@ ${cards ? `<section id="references" style="scroll-margin-top:20px;background:#fb
 ${faqs.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
 </div></section>
 </main>
-<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="tel:${PHONE}">863.332.9829</a></span></footer>
+<footer><span>© ${new Date().getFullYear()} WESTELIS · Central Florida · By appointment</span><span><a href="/">Home</a> · <a href="/drop/">Watch Drop</a> · <a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a> · <a href="sms:${PHONE}">Text 863.332.9829</a></span></footer>
 ${SMS_DESKTOP}
 <script>
 document.getElementById('sell-form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button'),st=document.getElementById('status');
 const d=Object.fromEntries(new FormData(f));if(d.website)return;d.kind='sell';b.disabled=true;st.textContent='Sending…';
 try{await fetch(${JSON.stringify(FEED_URL)},{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});
 f.reset();st.textContent='Received. JB will reply using the details you provided. To speed things up, text photos to 863.332.9829.';
-if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}catch(err){st.textContent='Could not send. Please text or call 863.332.9829.';}finally{b.disabled=false;}};
+if(window.gtag)gtag('event','generate_lead',{form:'sell',request_type:'sell'});}catch(err){st.textContent='Could not send. Please text 863.332.9829.';}finally{b.disabled=false;}};
 </script>
 </body></html>
 `;

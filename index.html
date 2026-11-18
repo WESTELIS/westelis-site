@@ -140,6 +140,7 @@ h2{font-size:clamp(34px,4.2vw,52px);line-height:1.1;color:var(--navy)}
 .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:80px}
 .contact-direct{margin-top:34px;display:grid;gap:16px}
 .contact-direct a{text-decoration:none;color:var(--navy);font-size:16px}
+.text-note{margin:-4px 0 0;font-size:14px;color:var(--muted)}
 .contact-direct .phone{font:500 34px/1 var(--serif)}
 .contact-meta{margin-top:30px;font:500 11px/1.6 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 form .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
@@ -297,10 +298,10 @@ summary{cursor:pointer;font-weight:500;color:var(--navy)}details p{color:var(--m
     <div class="reveal">
       <p class="eyebrow">Request a quote</p>
       <h2 id="c-h">Let’s Talk Watches.</h2>
-      <p class="lead" style="margin-top:20px">Buying, selling or searching for something specific? Share the details, or speak directly with JB Hale.</p>
+      <p class="lead" style="margin-top:20px">Buying, selling or searching for something specific? Share the details below, or text JB Hale directly.</p>
       <div class="contact-direct">
-        <a class="phone" href="tel:+18633329829">863.332.9829</a>
-        <a href="sms:+18633329829?&body=Hi%20JB%2C%20I%20found%20WESTELIS%20on%20westelis.com." data-alt="#contact">Text JB</a>
+        <a class="phone" href="sms:+18633329829?&body=Hi%20JB%2C%20I%20found%20WESTELIS%20on%20westelis.com." data-alt="#contact">Text 863.332.9829</a>
+        <p class="text-note">Texts and requests are answered same day. Please text rather than call.</p>
         <a href="https://www.instagram.com/westelis.time/" target="_blank" rel="noopener">Instagram · @westelis.time</a>
         <a href="https://www.facebook.com/profile.php?id=61578202760394" target="_blank" rel="noopener">Facebook</a>
       </div>
@@ -336,7 +337,7 @@ summary{cursor:pointer;font-weight:500;color:var(--navy)}details p{color:var(--m
       <div class="footer-cols">
         <div><h4>Explore</h4><a href="#inventory">Watches</a><a href="/sell/">Sell Your Watch</a><a href="#testimonials">Testimonials</a><a href="/sell/#references">References</a><a href="#contact">Contact</a></div>
         <div><h4>Follow</h4><a href="https://www.instagram.com/westelis.time/" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/profile.php?id=61578202760394" target="_blank" rel="noopener">Facebook</a><a href="/drop/" target="_blank" rel="noopener">WhatsApp Watch Drop</a></div>
-        <div><h4>Contact</h4><a href="tel:+18633329829">863.332.9829</a><a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a><a href="https://westelis.com/">westelis.com</a></div>
+        <div><h4>Contact</h4><a href="sms:+18633329829?&body=Hi%20JB%2C%20I%20found%20WESTELIS%20on%20westelis.com.">Text 863.332.9829</a><a href="https://g.page/r/CRBXsF5Co8IWEBM/review" target="_blank" rel="noopener">Review us on Google</a><a href="https://westelis.com/">westelis.com</a></div>
       </div>
     </div>
     <div class="footer-bottom"><span>© 2026 WESTELIS · Central Florida · By appointment</span><a href="#main">Back to top ↑</a></div>
@@ -383,7 +384,7 @@ async function loadWatches(){
   let shown=false;
   try{const r=await fetch('/assets/inventory.json',{cache:'no-cache'});if(r.ok){renderWatches(avail(await r.json()));shown=true;}}catch(e){}
   try{const r=await fetch(FEED);renderWatches(avail(await r.json()));shown=true;}catch(e){}
-  if(!shown)document.getElementById('watch-list').replaceChildren(el('div','Current availability could not be loaded. Please call or text 863.332.9829.','empty-state'));
+  if(!shown)document.getElementById('watch-list').replaceChildren(el('div','Current availability could not be loaded. Please text 863.332.9829.','empty-state'));
 }
 function alignCards(){const sel=['.card-model','.ref-row','.price'];const cards=[...document.querySelectorAll('.watch-card')];sel.forEach(q=>cards.forEach(c=>{const e=c.querySelector(q);if(e)e.style.minHeight='';}));if(innerWidth<761)return;const rows={};cards.forEach(c=>{(rows[c.offsetTop]=rows[c.offsetTop]||[]).push(c);});Object.values(rows).forEach(r=>sel.forEach(q=>{const els=r.map(c=>c.querySelector(q)).filter(Boolean);const m=Math.max(...els.map(e=>e.getBoundingClientRect().height));els.forEach(e=>e.style.minHeight=m+'px');}));}
 addEventListener('resize',()=>{clearTimeout(window._ac);window._ac=setTimeout(alignCards,150);});addEventListener('load',alignCards);
@@ -392,7 +393,7 @@ function prefillRequest(list){const id=new URLSearchParams(location.search).get(
 document.querySelectorAll('[data-kind]').forEach(a=>a.addEventListener('click',()=>{const f=document.getElementById('quote-form');if(f)f.elements.kind.value=a.dataset.kind;}));
 document.getElementById('quote-form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button'),st=document.getElementById('quote-status');const d=Object.fromEntries(new FormData(f));if(d.website)return;b.disabled=true;st.textContent='Sending your request…';
   try{await fetch(FEED,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)});f.reset();st.textContent='Received. JB will contact you using the details provided.';if(window.gtag)gtag('event','generate_lead',{form:'quote',request_type:d.kind||''});}
-  catch(err){st.textContent='Your request could not be sent. Please call or text 863.332.9829.';}finally{b.disabled=false;}};
+  catch(err){st.textContent='Your request could not be sent. Please text 863.332.9829.';}finally{b.disabled=false;}};
 (function(){if(!('IntersectionObserver' in window)){document.querySelectorAll('.reveal').forEach(x=>x.classList.add('in'));return;}const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}}),{rootMargin:'0px 0px -8% 0px'});document.querySelectorAll('.reveal').forEach(x=>io.observe(x));})();
 loadWatches();
 </script>
